@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IDOL GENESIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF1493;
+            --secondary: #00D4FF;
+            --gold: #FFD700;
+            --dark: #0f0f1a;
+            --card: rgba(25, 25, 45, 0.95);
+            --success: #00ff88;
+            --danger: #ff4466;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            background: var(--dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== TITLE SCREEN ===== */
+        .title-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(255,20,147,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0,212,255,0.3) 0%, transparent 50%),
+                var(--dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 背景にうっすらアイドルの画像を入れる装飾 */
+        .title-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1605406518013-eb61958c8a14?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+            filter: grayscale(50%);
+        }
+
+        .title-logo {
+            font-family: 'Dela Gothic One', cursive;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            filter: drop-shadow(0 0 15px rgba(255,20,147,0.3));
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255,20,147,0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(0,212,255,0.5)); }
+        }
+
+        .title-sub {
+            font-size: 0.8rem;
+            color: #fff;
+            letter-spacing: 0.3em;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .name-input {
+            background: rgba(0,0,0,0.5);
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            color: #fff;
+            text-align: center;
+            width: 80%;
+            max-width: 280px;
+            margin-bottom: 1.5rem;
+            outline: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .name-input::placeholder { color: #ccc; }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--primary), #ff69b4);
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,20,147,0.4);
+            transition: transform 0.2s;
+        }
+        .start-btn:active { transform: scale(0.95); }
+
+        /* ===== GAME SCREEN ===== */
+        .game-screen {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(255,20,147,0.15) 0%, transparent 50%),
+                var(--dark);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: var(--card);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .idol-name {
+            font-family: 'Dela Gothic One', cursive;
+            font-size: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .day-badge {
+            background: linear-gradient(135deg, var(--gold), #ffa500);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Idol Visual Section */
+        .idol-visual-section {
+            padding: 1.5rem 1rem 1rem;
+            text-align: center;
+        }
+
+        .idol-avatar-container {
+            position: relative;
+            width: 140px; /* 少し大きくしました */
+            height: 140px;
+            margin: 0 auto 1rem;
+        }
+
+        /* フォトリアル用にCSSを変更 */
+        .idol-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover; /* 画像の比率を維持してトリミング */
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 30px rgba(255,20,147,0.5);
+            background: #333; /* 読み込み前の色 */
+            transition: border-color 0.5s, box-shadow 0.5s;
+        }
+
+        .level-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--gold), #ffa500);
+            color: #000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border: 3px solid var(--dark);
+            z-index: 2;
+        }
+
+        .idol-rank {
+            font-size: 0.85rem;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .fans-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .fans-icon { font-size: 1.2rem; }
+
+        .fans-count {
+            font-family: 'Dela Gothic One', cursive;
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+
+        .fans-change {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+        }
+        .fans-change.positive { background: rgba(0,255,136,0.2); color: var(--success); }
+        .fans-change.negative { background: rgba(255,68,102,0.2); color: var(--danger); }
+
+        /* Hexagon Radar Chart */
+        .radar-section {
+            padding: 0.5rem 1rem 1rem;
+        }
+
+        .radar-container {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .radar-title {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .radar-chart {
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        /* Condition Bars */
+        .condition-section {
+            padding: 0 1rem;
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .condition-item {
+            flex: 1;
+            background: var(--card);
+            border-radius: 12px;
+            padding: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .condition-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .condition-label { color: #888; }
+        .condition-value { font-weight: 700; }
+
+        .condition-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .condition-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        .condition-fill.energy { background: linear-gradient(90deg, #00ff88, #00cc66); }
+        .condition-fill.motivation { background: linear-gradient(90deg, var(--primary), #ff69b4); }
+
+        /* Action Section */
+        .action-section {
+            padding: 1rem;
+        }
+
+        .action-tabs {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 0.8rem;
+            overflow-x: auto;
+            padding-bottom: 0.3rem;
+            scrollbar-width: none;
+        }
+        .action-tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: #888;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), #ff69b4);
+            color: #fff;
+            border-color: transparent;
+            font-weight: bold;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem;
+        }
+
+        .action-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card:active {
+            transform: scale(0.98);
+            border-color: var(--primary);
+        }
+
+        .action-card.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .action-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .action-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .action-desc { font-size: 0.65rem; color: #aaa; line-height: 1.3; margin-bottom: 0.4rem; }
+        .action-cost { font-size: 0.65rem; color: var(--gold); }
+        .action-req { font-size: 0.6rem; color: var(--primary); margin-top: 0.2rem; font-weight: bold; }
+
+        /* Next Day Button */
+        .next-day-btn {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--gold), #ffa500);
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #000;
+            border-radius: 16px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(255,215,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .next-day-btn:disabled {
+            background: #333;
+            color: #666;
+            box-shadow: none;
+            transform: translateY(100%);
+        }
+
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 350px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--primary);
+            animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-type {
+            font-size: 0.7rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-family: 'Dela Gothic One', cursive;
+            font-size: 1.3rem;
+            text-align: center;
+            margin: 0.5rem 0 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.4;
+        }
+
+        .modal-desc {
+            font-size: 0.9rem;
+            color: #ccc;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .choice-btn {
+            display: block;
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            color: #fff;
+            text-align: left;
+            margin-bottom: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .choice-btn:active {
+            background: rgba(255,20,147,0.2);
+            border-color: var(--primary);
+            transform: scale(0.98);
+        }
+
+        .choice-text { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+        .choice-hint { font-size: 0.75rem; color: #888; }
+
+        .result-changes {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .change-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .change-item:last-child { border-bottom: none; }
+        
+        .change-item.positive { color: var(--success); }
+        .change-item.negative { color: var(--danger); }
+
+        .modal-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #ff69b4);
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255,20,147,0.3);
+        }
+
+        /* ===== ENDING SCREEN ===== */
+        .ending-screen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            background: 
+                radial-gradient(ellipse at 50% 30%, rgba(255,215,0,0.3) 0%, transparent 50%),
+                var(--dark);
+        }
+
+        .ending-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .ending-title {
+            font-family: 'Dela Gothic One', cursive;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .ending-title.success {
+            background: linear-gradient(135deg, var(--gold), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ending-title.failure { color: #666; }
+
+        .ending-subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .ending-stats {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .ending-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+        .ending-stat:last-child { border-bottom: none; }
+
+        .restart-btn {
+            background: linear-gradient(135deg, var(--secondary), #0099cc);
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+
+        /* Milestone Toast */
+        .milestone-toast {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--card), rgba(40,40,60,0.98));
+            border: 3px solid var(--gold);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            z-index: 2000;
+            width: 90%;
+            max-width: 320px;
+            animation: milestoneIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 0 50px rgba(255,215,0,0.5);
+        }
+
+        @keyframes milestoneIn {
+            from { transform: translate(-50%, -50%) scale(0); }
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .milestone-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .milestone-title { font-family: 'Dela Gothic One', cursive; color: var(--gold); margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .milestone-desc { font-size: 0.9rem; color: #fff; margin-bottom: 1.5rem; }
+        .milestone-close {
+            background: var(--gold);
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #000;
+            font-size: 1rem;
+        }
+
+        .toast-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1999;
+            backdrop-filter: blur(3px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="title-screen" id="titleScreen">
+    <div class="title-bg-image"></div>
+    <h1 class="title-logo">IDOL GENESIS</h1>
+    <p class="title-sub">アイドル育成シミュレーション</p>
+    <input type="text" class="name-input" id="idolNameInput" placeholder="アイドル名を入力" maxlength="10">
+    <button class="start-btn" id="startBtn">デビュー開始</button>
+</div>
+
+<div class="game-screen" id="gameScreen">
+    <header class="header">
+        <div class="idol-name" id="displayName">ゆめ</div>
+        <div class="day-badge">DAY <span id="dayCount">1</span></div>
+    </header>
+
+    <div class="idol-visual-section">
+        <div class="idol-avatar-container">
+            <img class="idol-avatar" id="idolAvatar" src="" alt="Idol Avatar">
+            <div class="level-badge" id="levelBadge">1</div>
+        </div>
+        <div class="idol-rank" id="idolRank">🌱 新人アイドル</div>
+        <div class="fans-display">
+            <span class="fans-icon">👥</span>
+            <span class="fans-count" id="fansCount">100</span>
+            <span class="fans-change" id="fansChange"></span>
+        </div>
+    </div>
+
+    <div class="radar-section">
+        <div class="radar-container">
+            <div class="radar-title">⭐ 能力マトリクス</div>
+            <svg class="radar-chart" id="radarChart" viewBox="0 0 200 180"></svg>
+        </div>
+    </div>
+
+    <div class="condition-section">
+        <div class="condition-item">
+            <div class="condition-header">
+                <span class="condition-label">⚡ 体力</span>
+                <span class="condition-value" id="energyValue">100</span>
+            </div>
+            <div class="condition-bar">
+                <div class="condition-fill energy" id="energyBar" style="width:100%"></div>
+            </div>
+        </div>
+        <div class="condition-item">
+            <div class="condition-header">
+                <span class="condition-label">🔥 やる気</span>
+                <span class="condition-value" id="motivationValue">100</span>
+            </div>
+            <div class="condition-bar">
+                <div class="condition-fill motivation" id="motivationBar" style="width:100%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-section">
+        <div class="action-tabs" id="actionTabs">
+            <button class="tab-btn active" data-tab="training">レッスン</button>
+            <button class="tab-btn" data-tab="work">仕事</button>
+            <button class="tab-btn" data-tab="rest">休息</button>
+            <button class="tab-btn" data-tab="special">イベント</button>
+        </div>
+        <div class="action-grid" id="actionGrid"></div>
+    </div>
+
+    <button class="next-day-btn" id="nextDayBtn" disabled>翌日へ進む →</button>
+</div>
+
+<div class="modal-overlay" id="eventModal">
+    <div class="modal-card">
+        <div class="modal-type" id="eventType">イベント</div>
+        <h2 class="modal-title" id="eventTitle">タイトル</h2>
+        <p class="modal-desc" id="eventDesc">説明</p>
+        <div id="eventChoices"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="resultModal">
+    <div class="modal-card">
+        <h2 class="modal-title" id="resultTitle">結果</h2>
+        <p class="modal-desc" id="resultMsg">メッセージ</p>
+        <div class="result-changes" id="resultChanges"></div>
+        <button class="modal-btn" id="resultClose">続ける</button>
+    </div>
+</div>
+
+<div class="ending-screen" id="endingScreen">
+    <div class="ending-icon" id="endingIcon">👑</div>
+    <h1 class="ending-title" id="endingTitle">IDOL OF IDOLS</h1>
+    <p class="ending-subtitle" id="endingSubtitle">東京ドーム55,000人を感動させた！</p>
+    <div class="ending-stats">
+        <div class="ending-stat"><span>最終日</span><span id="finalDay">-</span></div>
+        <div class="ending-stat"><span>ファン数</span><span id="finalFans">-</span></div>
+        <div class="ending-stat"><span>イベント数</span><span id="finalEvents">-</span></div>
+    </div>
+    <button class="restart-btn" id="restartBtn">もう一度プレイ</button>
+</div>
+
+<div class="toast-overlay" id="toastOverlay"></div>
+<div class="milestone-toast" id="milestoneToast">
+    <div class="milestone-icon" id="milestoneIcon">🎉</div>
+    <h3 class="milestone-title" id="milestoneTitle">達成！</h3>
+    <p class="milestone-desc" id="milestoneDesc">説明</p>
+    <button class="milestone-close" id="milestoneClose">OK</button>
+</div>
+
+<script>
+// ============================================
+// IDOL GENESIS v2 - Photoreal Edition
+// ============================================
+
+const TOKYO_DOME = 55000;
+
+const state = {
+    name: '',
+    day: 1,
+    fans: 100,
+    fansChange: 0,
+    stats: { vocal: 10, dance: 10, visual: 10, charm: 10, mental: 10, luck: 10 },
+    energy: 100,
+    motivation: 100,
+    actions: 0,
+    maxActions: 2,
+    events: 0,
+    tab: 'training',
+    milestones: {}
+};
+
+// ============================================
+// 【設定】アイドル画像リスト
+// ここを好きな画像のURL（https://... または ./image.jpg）に変更してください
+// ============================================
+const idolImages = {
+    // レベル1〜2: 新人・カジュアル（自然な雰囲気）
+    rookie: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=400&auto=format&fit=crop",
+    
+    // レベル3〜4: 選抜・ファッション（洗練された雰囲気）
+    member: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=400&auto=format&fit=crop",
+    
+    // レベル5〜6: トップアイドル・ステージ（華やかな雰囲気）
+    star: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop"
+};
+
+// ランク定義と色設定
+const idolStages = [
+    { level: 1, rank: '🌱 新人アイドル', color: '#ffb6c1' },
+    { level: 2, rank: '🌸 研究生', color: '#ff69b4' },
+    { level: 3, rank: '⭐ 正規メンバー', color: '#ff1493' },
+    { level: 4, rank: '🌟 選抜メンバー', color: '#ff00ff' },
+    { level: 5, rank: '💫 センター', color: '#9400d3' },
+    { level: 6, rank: '👑 トップアイドル', color: '#ffd700' }
+];
+
+const actions = {
+    training: [
+        { id: 'vocal', name: 'ボイトレ', icon: '🎤', desc: '歌唱力UP', cost: 20, fx: { vocal: [3,6] } },
+        { id: 'dance', name: 'ダンス', icon: '💃', desc: 'ダンス力UP', cost: 25, fx: { dance: [3,6] } },
+        { id: 'visual', name: 'ビジュアル', icon: '✨', desc: '表現力UP', cost: 15, fx: { visual: [3,6] } },
+        { id: 'charm', name: 'トーク', icon: '💬', desc: 'カリスマUP', cost: 15, fx: { charm: [3,6] } },
+        { id: 'mental', name: 'メンタル', icon: '🧘', desc: '精神力UP', cost: 10, fx: { mental: [4,8] } },
+        { id: 'all', name: '総合', icon: '🌟', desc: '全体UP', cost: 30, fx: { vocal:[1,3], dance:[1,3], visual:[1,3], charm:[1,3] } }
+    ],
+    work: [
+        { id: 'street', name: '路上ライブ', icon: '🎸', desc: 'ファン獲得', cost: 20, req: {}, fx: { fans: [10,50] } },
+        { id: 'sns', name: 'SNS投稿', icon: '📱', desc: '認知度UP', cost: 10, req: {}, fx: { fans: [5,30] } },
+        { id: 'local', name: '地域イベント', icon: '🏪', desc: '地元で人気', cost: 25, req: { fans: 500 }, fx: { fans: [30,100] } },
+        { id: 'radio', name: 'ラジオ出演', icon: '📻', desc: 'メディア露出', cost: 15, req: { fans: 1000 }, fx: { fans: [50,150] } },
+        { id: 'magazine', name: '雑誌撮影', icon: '📸', desc: '人気急上昇', cost: 20, req: { fans: 2000 }, fx: { fans: [80,200] } },
+        { id: 'tv', name: 'テレビ出演', icon: '📺', desc: '全国区に', cost: 30, req: { fans: 5000 }, fx: { fans: [200,500] } }
+    ],
+    rest: [
+        { id: 'break', name: '休憩', icon: '☕', desc: '体力回復', cost: 0, fx: { energy: [15,25], motivation: [5,10] } },
+        { id: 'sleep', name: '休養日', icon: '🛏️', desc: '完全回復', cost: 0, fx: { energy: [40,60], motivation: [10,20] } },
+        { id: 'spa', name: 'エステ', icon: '🧖', desc: '美容ケア', cost: 0, fx: { energy: [25,35], visual: [1,3] } },
+        { id: 'hobby', name: '趣味', icon: '🎮', desc: 'リフレッシュ', cost: 0, fx: { motivation: [20,35], luck: [1,3] } }
+    ],
+    special: [
+        { id: 'mini', name: 'ミニライブ', icon: '🎵', desc: '100人規模', cost: 40, req: { fans: 500, vocal: 20, dance: 20 }, fx: { fans: [100,300] }, isEvent: true },
+        { id: 'shake', name: '握手会', icon: '🤝', desc: 'ファン交流', cost: 35, req: { fans: 1000, charm: 25 }, fx: { fans: [150,400] }, isEvent: true },
+        { id: 'solo', name: 'ソロライブ', icon: '🎤', desc: '1000人規模', cost: 50, req: { fans: 3000, vocal: 35, dance: 35 }, fx: { fans: [500,1000] }, isEvent: true },
+        { id: 'arena', name: 'アリーナ', icon: '🏟️', desc: '1万人規模', cost: 60, req: { fans: 15000, vocal: 50, dance: 50, mental: 40 }, fx: { fans: [2000,5000] }, isEvent: true },
+        { id: 'dome', name: '東京ドーム', icon: '👑', desc: '5.5万人！', cost: 80, req: { fans: 50000, vocal: 70, dance: 70, visual: 60, charm: 60, mental: 60 }, fx: { fans: [5000,10000] }, isEvent: true, isFinal: true }
+    ]
+};
+
+const randomEvents = [
+    {
+        type: '危機', title: 'スキャンダル報道',
+        desc: '週刊誌にあなたの噂が...どう対応する？',
+        choices: [
+            { text: '公式に否定', hint: 'メンタル勝負', check: 'mental', ok: { fans: [-100,100], mental: [3,5] }, ng: { fans: [-500,-200] } },
+            { text: '沈黙を守る', hint: '運任せ', check: 'luck', ok: { fans: [-50,50] }, ng: { fans: [-300,-100] } },
+            { text: 'ユーモアで返す', hint: 'カリスマ勝負', check: 'charm', ok: { fans: [100,300] }, ng: { fans: [-400,-200] } }
+        ]
+    },
+    {
+        type: 'チャンス', title: 'プロデューサーからオファー',
+        desc: '大物Pから新曲制作の話が！',
+        choices: [
+            { text: '受ける', hint: '能力大幅UP', ok: { vocal: [5,10], dance: [5,10], energy: [-40,-30], fans: [200,500] } },
+            { text: '断る', hint: '今の路線継続', ok: { motivation: [10,20], mental: [2,4] } }
+        ]
+    },
+    {
+        type: 'チャンス', title: 'SNSでバズった！',
+        desc: 'あなたの動画が大拡散！',
+        choices: [
+            { text: '配信増やす', hint: 'ビジュアル勝負', check: 'visual', ok: { fans: [300,800] }, ng: { fans: [100,200] } },
+            { text: '感謝を伝える', hint: 'カリスマUP', ok: { fans: [200,400], charm: [3,5] } }
+        ]
+    },
+    {
+        type: 'ライバル', title: 'ライバル登場！',
+        desc: '新人アイドルが話題に...',
+        choices: [
+            { text: 'レッスン強化', hint: '負けない！', ok: { vocal: [3,5], dance: [3,5], energy: [-25,-15] } },
+            { text: 'コラボ提案', hint: '運次第で大成功', check: 'luck', ok: { fans: [300,600] }, ng: { fans: [-100,50] } },
+            { text: 'マイペース', hint: 'メンタル強化', ok: { mental: [4,8] } }
+        ]
+    },
+    {
+        type: 'ほっこり', title: 'ファンからの手紙',
+        desc: '心のこもったプレゼントが届いた',
+        choices: [
+            { text: 'SNSでお礼', hint: 'ファン増加', ok: { fans: [50,150], motivation: [15,25] } },
+            { text: '直筆の返事', hint: '誠意が伝わる', ok: { motivation: [20,35], mental: [2,4] } }
+        ]
+    }
+];
+
+// DOM
+const $ = id => document.getElementById(id);
+
+function init() {
+    $('startBtn').onclick = startGame;
+    $('nextDayBtn').onclick = nextDay;
+    $('resultClose').onclick = () => $('resultModal').style.display = 'none';
+    $('restartBtn').onclick = restart;
+    $('milestoneClose').onclick = closeMilestone;
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.onclick = () => switchTab(btn.dataset.tab);
+    });
+    
+    $('idolNameInput').onkeypress = e => { if (e.key === 'Enter') startGame(); };
+}
+
+function startGame() {
+    state.name = $('idolNameInput').value.trim() || 'ゆめ';
+    $('displayName').textContent = state.name;
+    $('titleScreen').style.display = 'none';
+    $('gameScreen').style.display = 'block';
+    
+    // アニメーション用
+    $('gameScreen').style.opacity = 0;
+    setTimeout(() => {
+        $('gameScreen').style.transition = 'opacity 1s';
+        $('gameScreen').style.opacity = 1;
+    }, 100);
+
+    updateAll();
+}
+
+function switchTab(tab) {
+    state.tab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    renderActions();
+}
+
+function renderActions() {
+    const list = actions[state.tab];
+    $('actionGrid').innerHTML = list.map(a => {
+        const canDo = checkReq(a) && state.energy >= a.cost && state.actions < state.maxActions;
+        return `
+            <div class="action-card ${canDo ? '' : 'disabled'}" onclick="${canDo ? `doAction('${state.tab}','${a.id}')` : ''}">
+                <div class="action-icon">${a.icon}</div>
+                <div class="action-name">${a.name}</div>
+                <div class="action-desc">${a.desc}</div>
+                <div class="action-cost">⚡-${a.cost}</div>
+                ${a.req ? `<div class="action-req">${formatReq(a.req)}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function checkReq(a) {
+    if (!a.req) return true;
+    for (const [k, v] of Object.entries(a.req)) {
+        if (k === 'fans' && state.fans < v) return false;
+        if (state.stats[k] !== undefined && state.stats[k] < v) return false;
+    }
+    return true;
+}
+
+function formatReq(req) {
+    const parts = [];
+    if (req.fans) parts.push(`ファン${req.fans.toLocaleString()}`);
+    for (const s of ['vocal','dance','visual','charm','mental']) {
+        if (req[s]) parts.push(`${s.charAt(0).toUpperCase()}${req[s]}`);
+    }
+    return parts.join(' ');
+}
+
+function doAction(tab, id) {
+    const a = actions[tab].find(x => x.id === id);
+    if (!a || state.actions >= state.maxActions) return;
+    
+    state.energy -= a.cost;
+    state.actions++;
+    
+    const changes = applyEffects(a.fx);
+    
+    if (a.isFinal && state.fans >= TOKYO_DOME) {
+        state.events++;
+        setTimeout(() => showEnding(true), 500);
+        return;
+    }
+    
+    if (a.isEvent) state.events++;
+    
+    showResult(a.name, '成功！', changes);
+    updateAll();
+    
+    if (state.actions >= state.maxActions) {
+        $('nextDayBtn').disabled = false;
+        $('nextDayBtn').style.transform = 'translateY(0)';
+    }
+    
+    checkMilestones();
+}
+
+function applyEffects(fx, mult = 1) {
+    const changes = {};
+    for (const [k, range] of Object.entries(fx)) {
+        const v = Math.round(rand(range[0], range[1]) * mult);
+        if (k === 'fans') {
+            state.fans = Math.max(0, state.fans + v);
+            changes.fans = v;
+        } else if (k === 'energy') {
+            state.energy = clamp(state.energy + v, 0, 100);
+            changes.energy = v;
+        } else if (k === 'motivation') {
+            state.motivation = clamp(state.motivation + v, 0, 100);
+            changes.motivation = v;
+        } else if (state.stats[k] !== undefined) {
+            state.stats[k] = Math.min(100, state.stats[k] + v);
+            changes[k] = v;
+        }
+    }
+    return changes;
+}
+
+function showResult(title, msg, changes) {
+    $('resultTitle').textContent = title;
+    $('resultMsg').textContent = msg;
+    
+    const names = { fans: 'ファン', vocal: 'ボーカル', dance: 'ダンス', visual: 'ビジュアル', charm: 'カリスマ', mental: 'メンタル', luck: '運', energy: '体力', motivation: 'やる気' };
+    
+    $('resultChanges').innerHTML = Object.entries(changes)
+        .filter(([k, v]) => v !== 0)
+        .map(([k, v]) => `<div class="change-item ${v > 0 ? 'positive' : 'negative'}">
+            <span>${names[k]}</span><span>${v > 0 ? '+' : ''}${k === 'fans' ? v.toLocaleString() : v}</span>
+        </div>`).join('');
+    
+    $('resultModal').style.display = 'flex';
+}
+
+function nextDay() {
+    state.day++;
+    state.actions = 0;
+    $('nextDayBtn').disabled = true;
+    
+    // Recovery
+    state.energy = clamp(state.energy + rand(15, 25), 0, 100);
+    state.motivation = clamp(state.motivation + rand(-5, 10), 0, 100);
+    
+    // Fan flux
+    const avg = Object.values(state.stats).reduce((a, b) => a + b, 0) / 6;
+    const flux = Math.round((avg - 30) * (state.fans / 1000) * (Math.random() * 0.5 + 0.5));
+    state.fansChange = flux;
+    state.fans = Math.max(0, state.fans + flux);
+    
+    if (state.fans <= 0) { showEnding(false); return; }
+    if (state.day > 365) { showEnding(false, 'timeout'); return; }
+    
+    // Random event 10%
+    if (Math.random() < 0.1) {
+        triggerEvent();
+    }
+    
+    updateAll();
+    checkMilestones();
+}
+
+function triggerEvent() {
+    const e = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+    
+    $('eventType').textContent = e.type;
+    $('eventTitle').textContent = e.title;
+    $('eventDesc').textContent = e.desc;
+    
+    $('eventChoices').innerHTML = e.choices.map((c, i) => `
+        <button class="choice-btn" onclick="resolveEvent(${JSON.stringify(e).replace(/"/g, '&quot;')}, ${i})">
+            <div class="choice-text">${c.text}</div>
+            <div class="choice-hint">${c.hint}</div>
+        </button>
+    `).join('');
+    
+    $('eventModal').style.display = 'flex';
+}
+
+window.resolveEvent = function(e, i) {
+    $('eventModal').style.display = 'none';
+    
+    const c = e.choices[i];
+    let ok = true;
+    
+    if (c.check) {
+        const stat = state.stats[c.check] || 50;
+        ok = stat >= 30 + Math.random() * 40;
+    }
+    
+    const fx = ok ? c.ok : (c.ng || c.ok);
+    const changes = applyEffects(fx);
+    
+    showResult(e.title, ok ? '上手くいった！' : '失敗...', changes);
+    updateAll();
+    
+    if (state.fans <= 0) setTimeout(() => showEnding(false), 1000);
+};
+
+function checkMilestones() {
+    const checks = [
+        { key: 'f1k', fans: 1000, icon: '🌟', title: '1,000人突破！', desc: '順調なスタート！' },
+        { key: 'f5k', fans: 5000, icon: '⭐', title: '5,000人突破！', desc: '注目度UP！' },
+        { key: 'f10k', fans: 10000, icon: '🔥', title: '1万人突破！', desc: 'ブレイク！' },
+        { key: 'f50k', fans: 50000, icon: '👑', title: '5万人突破！', desc: 'ドームが見えた！' }
+    ];
+    
+    for (const c of checks) {
+        if (!state.milestones[c.key] && state.fans >= c.fans) {
+            state.milestones[c.key] = true;
+            showMilestone(c.icon, c.title, c.desc);
+            break;
+        }
+    }
+}
+
+function showMilestone(icon, title, desc) {
+    $('milestoneIcon').textContent = icon;
+    $('milestoneTitle').textContent = title;
+    $('milestoneDesc').textContent = desc;
+    $('toastOverlay').style.display = 'block';
+    $('milestoneToast').style.display = 'block';
+}
+
+function closeMilestone() {
+    $('toastOverlay').style.display = 'none';
+    $('milestoneToast').style.display = 'none';
+}
+
+function showEnding(win, reason = '') {
+    $('gameScreen').style.display = 'none';
+    $('endingScreen').style.display = 'flex';
+    
+    if (win) {
+        $('endingIcon').textContent = '👑';
+        $('endingTitle').textContent = 'IDOL OF IDOLS';
+        $('endingTitle').className = 'ending-title success';
+        $('endingSubtitle').textContent = `${state.name}は東京ドーム55,000人を感動させた！`;
+    } else {
+        $('endingIcon').textContent = reason === 'timeout' ? '⏰' : '💔';
+        $('endingTitle').textContent = reason === 'timeout' ? 'TIME OVER' : 'GAME OVER';
+        $('endingTitle').className = 'ending-title failure';
+        $('endingSubtitle').textContent = reason === 'timeout' ? '365日が過ぎた...' : 'ファンがいなくなった...';
+    }
+    
+    $('finalDay').textContent = state.day;
+    $('finalFans').textContent = state.fans.toLocaleString();
+    $('finalEvents').textContent = state.events;
+}
+
+function restart() {
+    Object.assign(state, {
+        day: 1, fans: 100, fansChange: 0,
+        stats: { vocal: 10, dance: 10, visual: 10, charm: 10, mental: 10, luck: 10 },
+        energy: 100, motivation: 100, actions: 0, events: 0, tab: 'training', milestones: {}
+    });
+    $('endingScreen').style.display = 'none';
+    $('titleScreen').style.display = 'flex';
+    $('idolNameInput').value = '';
+}
+
+function updateAll() {
+    $('dayCount').textContent = state.day;
+    $('fansCount').textContent = state.fans.toLocaleString();
+    
+    if (state.fansChange !== 0) {
+        $('fansChange').textContent = `${state.fansChange > 0 ? '+' : ''}${state.fansChange.toLocaleString()}`;
+        $('fansChange').className = `fans-change ${state.fansChange > 0 ? 'positive' : 'negative'}`;
+    } else {
+        $('fansChange').textContent = '';
+        $('fansChange').className = 'fans-change';
+    }
+    
+    $('energyValue').textContent = state.energy;
+    $('energyBar').style.width = state.energy + '%';
+    $('motivationValue').textContent = state.motivation;
+    $('motivationBar').style.width = state.motivation + '%';
+    
+    updateIdolVisual();
+    updateRadar();
+    renderActions();
+}
+
+function updateIdolVisual() {
+    // ステータス合計でレベル計算
+    const total = Object.values(state.stats).reduce((a, b) => a + b, 0);
+    let level = 1;
+    if (total >= 400) level = 6;
+    else if (total >= 300) level = 5;
+    else if (total >= 200) level = 4;
+    else if (total >= 120) level = 3;
+    else if (total >= 80) level = 2;
+    
+    const stage = idolStages[level - 1];
+    $('levelBadge').textContent = level;
+    $('idolRank').textContent = stage.rank;
+    
+    // 画像URLの切り替え（SVG生成を廃止し、srcを変更）
+    const imgEl = $('idolAvatar');
+    let targetSrc = idolImages.rookie;
+    
+    if (level >= 5) {
+        targetSrc = idolImages.star;
+        imgEl.style.borderColor = "#FFD700"; // 金枠
+        imgEl.style.boxShadow = "0 0 50px rgba(255,215,0,0.8)";
+    } else if (level >= 3) {
+        targetSrc = idolImages.member;
+        imgEl.style.borderColor = "#FF1493"; // ピンク枠
+        imgEl.style.boxShadow = "0 0 30px rgba(255,20,147,0.5)";
+    } else {
+        targetSrc = idolImages.rookie;
+        imgEl.style.borderColor = "#fff"; // 白枠
+        imgEl.style.boxShadow = "none";
+    }
+    
+    // 画像が既に同じなら再読み込みしない
+    if (!imgEl.src.includes(targetSrc)) {
+        imgEl.src = targetSrc;
+    }
+}
+
+function updateRadar() {
+    const svg = $('radarChart');
+    const cx = 100, cy = 85, r = 65;
+    const stats = ['vocal', 'dance', 'visual', 'charm', 'mental', 'luck'];
+    const labels = ['ボーカル', 'ダンス', 'ビジュアル', 'カリスマ', 'メンタル', '運'];
+    const colors = ['#ff6b9d', '#00d4ff', '#ffd700', '#ff69b4', '#9966ff', '#00ff88'];
+    
+    // Calculate points
+    const getPoint = (i, val) => {
+        const angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
+        const dist = (val / 100) * r;
+        return { x: cx + Math.cos(angle) * dist, y: cy + Math.sin(angle) * dist };
+    };
+    
+    // Background hexagons
+    let bgHex = '';
+    for (let level = 20; level <= 100; level += 20) {
+        const pts = [];
+        for (let i = 0; i < 6; i++) {
+            const p = getPoint(i, level);
+            pts.push(`${p.x},${p.y}`);
+        }
+        bgHex += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,${level === 100 ? 0.2 : 0.1})" stroke-width="1"/>`;
+    }
+    
+    // Axis lines
+    let axes = '';
+    for (let i = 0; i < 6; i++) {
+        const p = getPoint(i, 100);
+        axes += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>`;
+    }
+    
+    // Data polygon
+    const dataPoints = stats.map((s, i) => getPoint(i, state.stats[s]));
+    const dataPoly = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+    
+    // Labels and values
+    let labelsHtml = '';
+    stats.forEach((s, i) => {
+        const angle = (Math.PI * 2 * i / 6) - Math.PI / 2;
+        const lx = cx + Math.cos(angle) * (r + 22);
+        const ly = cy + Math.sin(angle) * (r + 22);
+        labelsHtml += `
+            <text x="${lx}" y="${ly}" fill="${colors[i]}" font-size="9" text-anchor="middle" dominant-baseline="middle">${labels[i]}</text>
+            <text x="${lx}" y="${ly + 11}" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">${state.stats[s]}</text>
+        `;
+    });
+    
+    svg.innerHTML = `
+        ${bgHex}
+        ${axes}
+        <polygon points="${dataPoly}" fill="rgba(255,20,147,0.3)" stroke="var(--primary)" stroke-width="2"/>
+        ${dataPoints.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${colors[i]}"/>`).join('')}
+        ${labelsHtml}
+    `;
+}
+
+// Utilities
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+// Start
+init();
+</script>
+
+</body>
+</html>
