@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>花火師アチャコ - Web Tribute</title>
+<meta name="description" content="MSX2風の花火調合ブラウザゲーム。非公式ファンメイド再現版。" />
+<style>
+:root{--ink:#e8f4ff;--muted:#8aa0b8;--panel:#10192b;--panel2:#17233a;--line:#34506d;--gold:#ffd15a;--cyan:#5de0ff;--pink:#ff6fbd}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#060a14;color:var(--ink);font-family:"Courier New",ui-monospace,monospace}body{background-image:radial-gradient(circle at 30% 10%,#14203d 0,transparent 38%),linear-gradient(#090d19,#02040a)}button,input{font:inherit}button{color:var(--ink)}#app{max-width:1500px;margin:auto;padding:16px}.topbar{display:flex;justify-content:space-between;gap:18px;align-items:end;border:3px solid var(--line);background:#0b1324;padding:12px 16px;box-shadow:6px 6px 0 #000}.eyebrow{font-size:11px;color:var(--cyan);letter-spacing:.16em}.topbar h1{font-size:clamp(22px,3vw,38px);margin:4px 0 0;color:var(--gold);text-shadow:3px 3px #7a2445}.topbar h1 span{font-size:.38em;color:var(--ink);text-shadow:none}.status{display:grid;grid-template-columns:auto auto auto;align-items:baseline;column-gap:8px;color:var(--muted);font-size:12px}.status b{color:var(--gold);font-size:23px;text-align:right}.status i{font-style:normal}main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:16px}.stage-panel,.lab-panel{border:3px solid var(--line);background:rgba(11,19,36,.94);box-shadow:6px 6px 0 #000}.stage-panel{padding:12px}.canvas-wrap{position:relative;overflow:hidden;border:3px solid #4a6988;background:#02030a;aspect-ratio:16/10}.canvas-wrap canvas{width:100%;height:100%;display:block;image-rendering:pixelated}.scanlines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.22) 3px 4px);mix-blend-mode:multiply}.hud{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;color:#dff9ff;font-size:12px;text-shadow:2px 2px #000}.message{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);min-width:260px;padding:14px;border:3px solid var(--gold);background:#11182ce8;text-align:center;font-size:18px;color:var(--gold);box-shadow:5px 5px 0 #000}.hidden{display:none}.actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}button{border:2px solid #547391;background:#1a2940;padding:10px 12px;cursor:pointer;box-shadow:3px 3px 0 #000}button:hover{filter:brightness(1.22);transform:translateY(-1px)}button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000}.primary{background:#b52d57;border-color:#ff87ad;font-weight:bold;min-width:190px}kbd{padding:2px 5px;background:#060a14;border:1px solid #687e99;font-size:10px}.toggle{margin-left:auto;color:var(--muted);font-size:12px}.lab-panel{padding:10px;display:flex;flex-direction:column;gap:10px}.portrait{display:flex;align-items:center;gap:12px;border:2px solid #55708e;background:#091225;padding:8px}.portrait canvas{width:72px;height:72px;image-rendering:pixelated;border:2px solid var(--gold);background:#18213e}.portrait strong{display:block;color:var(--gold);font-size:20px}.portrait small{display:block;color:#b7c9dc;margin-top:5px;line-height:1.4}.card{border:2px solid #2f4a68;background:var(--panel2);padding:10px}.card h2{font-size:13px;color:var(--cyan);margin:0 0 9px;border-bottom:1px dashed #46627e;padding-bottom:6px}.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.type{padding:7px 3px;font-size:12px}.type.active{background:#8f2f6a;border-color:#ff8fd0}.recipe label{display:grid;grid-template-columns:58px 35px 1fr;gap:7px;align-items:center;font-size:11px;margin:7px 0;color:#d1deea}.recipe output{text-align:right;color:var(--gold)}input[type=range]{accent-color:var(--pink);width:100%}.palette{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.palette button{padding:0;aspect-ratio:1;background:var(--c);border:3px solid #0c1020;outline:2px solid #47617b;box-shadow:none}.palette button.active{outline:3px solid #fff;transform:scale(.86)}.check{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)}.score-row{display:grid;grid-template-columns:65px 1fr 28px;gap:8px;align-items:center;font-size:11px;margin:7px 0}.score-row meter{width:100%;height:12px}.score-row b{color:var(--gold);text-align:right}.total{display:flex;align-items:baseline;gap:8px;border-top:1px dashed #46627e;margin-top:8px;padding-top:7px}.total strong{font-size:28px;color:var(--gold)}.total em{margin-left:auto;color:var(--pink);font-size:26px;font-style:normal}footer{text-align:center;color:#60738a;font-size:10px;padding:16px 4px 4px}@media(max-width:1000px){main{grid-template-columns:1fr}.lab-panel{display:grid;grid-template-columns:1fr 1fr}.portrait,.score-card{grid-column:1/-1}}@media(max-width:620px){#app{padding:7px}.topbar{align-items:start}.status{display:none}.lab-panel{display:flex}.hud{font-size:9px}.actions button{flex:1}.toggle{margin-left:0}.canvas-wrap{aspect-ratio:4/3}}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">MSX2-STYLE FIREWORK WORKSHOP</div>
+      <h1>花火師アチャコ <span>WEB TRIBUTE</span></h1>
+    </div>
+    <div class="status"><span>所持金</span><b id="money">1200</b><i>両</i><span>評判</span><b id="rep">0</b></div>
+  </header>
+
+  <main>
+    <section class="stage-panel">
+      <div class="canvas-wrap">
+        <canvas id="sky" width="960" height="600" aria-label="花火の打ち上げ画面"></canvas>
+        <div class="scanlines"></div>
+        <div class="hud">
+          <div id="mission">今夜の注文：鮮やかで大きな丸い花火</div>
+          <div id="wind">風：→ 1.2</div>
+        </div>
+        <div id="message" class="message hidden"></div>
+      </div>
+      <div class="actions">
+        <button id="launch" class="primary">打ち上げる <kbd>SPACE</kbd></button>
+        <button id="demo">おまかせ調合</button>
+        <button id="clear">夜空を消す</button>
+        <label class="toggle"><input id="sound" type="checkbox" checked><span>効果音</span></label>
+      </div>
+    </section>
+
+    <aside class="lab-panel">
+      <div class="portrait">
+        <canvas id="face" width="96" height="96"></canvas>
+        <div><strong>アチャコ</strong><small id="comment">さあ、今夜も一発いくよ！</small></div>
+      </div>
+
+      <section class="card">
+        <h2>一、玉を選ぶ</h2>
+        <div class="type-grid" id="types">
+          <button class="type active" data-type="chrysanthemum">菊</button>
+          <button class="type" data-type="peony">牡丹</button>
+          <button class="type" data-type="willow">柳</button>
+          <button class="type" data-type="ring">輪</button>
+          <button class="type" data-type="heart">心</button>
+          <button class="type" data-type="random">変化</button>
+        </div>
+      </section>
+
+      <section class="card recipe">
+        <h2>二、星を調合する</h2>
+        <label>火薬 <output id="powderOut">55</output><input id="powder" type="range" min="10" max="100" value="55"></label>
+        <label>金属粉 <output id="metalOut">60</output><input id="metal" type="range" min="0" max="100" value="60"></label>
+        <label>燃焼剤 <output id="burnOut">50</output><input id="burn" type="range" min="0" max="100" value="50"></label>
+        <label>割薬 <output id="burstOut">55</output><input id="burst" type="range" min="10" max="100" value="55"></label>
+        <label>導火線 <output id="fuseOut">55</output><input id="fuse" type="range" min="15" max="95" value="55"></label>
+      </section>
+
+      <section class="card">
+        <h2>三、色を決める</h2>
+        <div class="palette" id="palette">
+          <button data-color="#ff5c5c" style="--c:#ff5c5c" aria-label="赤"></button>
+          <button data-color="#ffd95c" style="--c:#ffd95c" aria-label="黄"></button>
+          <button class="active" data-color="#6eff8a" style="--c:#6eff8a" aria-label="緑"></button>
+          <button data-color="#5cc8ff" style="--c:#5cc8ff" aria-label="青"></button>
+          <button data-color="#b875ff" style="--c:#b875ff" aria-label="紫"></button>
+          <button data-color="#fff4dc" style="--c:#fff4dc" aria-label="白"></button>
+        </div>
+        <label class="check"><input id="multicolor" type="checkbox"><span>混色仕込み</span></label>
+      </section>
+
+      <section class="card score-card">
+        <h2>鑑定書</h2>
+        <div class="score-row"><span>大きさ</span><meter id="sizeScore" min="0" max="100" value="0"></meter><b id="sizeText">--</b></div>
+        <div class="score-row"><span>鮮やかさ</span><meter id="colorScore" min="0" max="100" value="0"></meter><b id="colorText">--</b></div>
+        <div class="score-row"><span>形</span><meter id="shapeScore" min="0" max="100" value="0"></meter><b id="shapeText">--</b></div>
+        <div class="total"><span>総合</span><strong id="total">--</strong><em id="rank"></em></div>
+      </section>
+    </aside>
+  </main>
+  <footer>非公式ファンメイド作品。原作の画像・音源・プログラムは使用していません。操作：SPACE 打ち上げ / R おまかせ / C 消去</footer>
+</div>
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const canvas=$('#sky'),ctx=canvas.getContext('2d');
+const face=$('#face').getContext('2d');
+let W=canvas.width,H=canvas.height,particles=[],rockets=[],embers=[],last=performance.now(),money=1200,rep=0;
+let selectedType='chrysanthemum',selectedColor='#6eff8a',wind=(Math.random()*2.8-1.4);
+const inputs=['powder','metal','burn','burst','fuse'];
+const missions=[
+ {text:'鮮やかで大きな丸い花火',type:'peony',size:75,color:75},
+ {text:'長く余韻を残す金色の柳',type:'willow',size:62,color:62},
+ {text:'小さく整った輪の花火',type:'ring',size:45,color:65},
+ {text:'派手で意外性のある変化玉',type:'random',size:70,color:80},
+ {text:'心が伝わる赤い型物花火',type:'heart',size:58,color:65}
+];
+let mission=missions[0];
+
+function drawFace(mood='normal'){
+ face.imageSmoothingEnabled=false;face.clearRect(0,0,96,96);face.fillStyle='#1b2442';face.fillRect(0,0,96,96);
+ const px=(x,y,w,h,c)=>{face.fillStyle=c;face.fillRect(x,y,w,h)};
+ px(23,12,50,10,'#16213a');px(17,22,62,10,'#16213a');px(20,32,56,45,'#f1bd86');
+ px(13,39,10,28,'#30213b');px(73,39,10,28,'#30213b');px(28,42,11,7,'#20213c');px(57,42,11,7,'#20213c');
+ px(32,44,4,4,'#dff9ff');px(60,44,4,4,'#dff9ff');px(45,49,6,13,'#dc916b');
+ if(mood==='happy'){px(35,66,26,4,'#7c2849');px(39,70,18,4,'#fff4dc')} else if(mood==='bad'){px(36,70,24,4,'#7c2849');px(40,66,16,4,'#7c2849')} else px(38,67,20,4,'#7c2849');
+ px(24,77,48,13,'#b52d57');px(10,16,17,8,'#ffd15a');px(69,16,17,8,'#ffd15a');
+}
+drawFace();
+
+function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);W=canvas.width;H=canvas.height;ctx.setTransform(d,0,0,d,0,0);W=r.width;H=r.height}
+new ResizeObserver(resize).observe(canvas);
+
+function setupStars(){embers=Array.from({length:100},()=>({x:Math.random()*1600,y:Math.random()*520,a:.15+Math.random()*.55,s:Math.random()<.12?2:1}))}setupStars();
+function hexRgb(hex){return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]}
+function mixColors(){let colors=[selectedColor];if($('#multicolor').checked){const all=['#ff5c5c','#ffd95c','#6eff8a','#5cc8ff','#b875ff','#fff4dc'];colors=[selectedColor,...all.sort(()=>Math.random()-.5).slice(0,3)]}return colors}
+function beep(freq=200,dur=.08,vol=.03,type='square'){if(!$('#sound').checked)return;const AC=window.AudioContext||window.webkitAudioContext;window._ac=window._ac||new AC();const a=window._ac,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,a.currentTime);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+dur);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+dur)}
+function getRecipe(){return Object.fromEntries(inputs.map(id=>[id,+$('#'+id).value]))}
+function launch(){
+ if(money<20){flash('材料代が足りない！');return} money-=20;updateStatus();
+ const r=getRecipe(), fuseDelay=1100-(r.fuse*7.5),targetY=H*(.68-r.fuse/180),x=W*(.35+Math.random()*.3);
+ rockets.push({x,y:H-40,vx:wind*.12+(Math.random()-.5)*.3,vy:-(4.4+r.powder*.023),targetY,color:selectedColor,life:0,delay:fuseDelay,recipe:r,type:selectedType,colors:mixColors()});
+ beep(110,.12,.025,'sawtooth');$('#comment').textContent='上がれ、上がれーっ！';
+}
+function explode(ro){
+ const r=ro.recipe,baseN=Math.round(55+r.burst*1.25),speed=1.2+r.powder*.022+r.burst*.011,life=45+r.burn*.62;
+ let n=baseN;if(ro.type==='willow')n=Math.round(n*.75);if(ro.type==='heart')n=110;
+ for(let i=0;i<n;i++){
+  let a=(i/n)*Math.PI*2,s=speed*(.72+Math.random()*.42),vx=Math.cos(a)*s,vy=Math.sin(a)*s;
+  if(ro.type==='peony')s*=.88;
+  if(ro.type==='willow'){vx*=.7;vy*=.62}
+  if(ro.type==='ring'){s=speed*(.94+Math.random()*.05);vx=Math.cos(a)*s;vy=Math.sin(a)*s}
+  if(ro.type==='heart'){const t=a;vx=Math.sin(t)**3*speed*.9;vy=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*speed/15}
+  if(ro.type==='random'){a=Math.random()*Math.PI*2;s*=Math.random()*.9+.25;vx=Math.cos(a)*s;vy=Math.sin(a)*s}
+  const color=ro.colors[i%ro.colors.length],rgb=hexRgb(color);
+  particles.push({x:ro.x,y:ro.y,vx,vy,life,max:life+Math.random()*25,rgb,trail:ro.type==='willow'?4:ro.type==='chrysanthemum'?2:1,drag:ro.type==='willow'?.982:.975,gravity:ro.type==='willow'?.045:.028});
+ }
+ for(let k=0;k<10;k++)setTimeout(()=>beep(70+Math.random()*80,.1,.012,'square'),k*12);
+ grade(ro);
+}
+function grade(ro){
+ const r=ro.recipe;
+ const size=Math.max(0,Math.min(100,Math.round(r.powder*.55+r.burst*.55-Math.abs(r.powder-r.burst)*.25)));
+ const color=Math.max(0,Math.min(100,Math.round(r.metal*.65+r.burn*.35-Math.abs(r.metal-r.burn)*.18+($('#multicolor').checked?8:0))));
+ const ideal={chrysanthemum:[58,55,52],peony:[62,68,54],willow:[72,42,82],ring:[46,61,58],heart:[55,65,50],random:[77,75,70]}[ro.type];
+ const shape=Math.max(0,Math.min(100,Math.round(100-(Math.abs(r.burst-ideal[0])+Math.abs(r.powder-ideal[1])+Math.abs(r.burn-ideal[2]))*.75-Math.abs(wind)*5)));
+ let total=Math.round(size*.34+color*.33+shape*.33);
+ let bonus=0;if(ro.type===mission.type)bonus+=8;if(Math.abs(size-mission.size)<15)bonus+=5;if(color>=mission.color)bonus+=5;total=Math.min(100,total+bonus);
+ const rank=total>=92?'名人':total>=82?'特上':total>=70?'上':total>=55?'並':'失敗';
+ [['size',size],['color',color],['shape',shape]].forEach(([n,v])=>{$('#'+n+'Score').value=v;$('#'+n+'Text').textContent=v});
+ $('#total').textContent=total;$('#rank').textContent=rank;money+=Math.max(0,Math.round(total*1.15-35));rep+=total>=70?1:total<45?-1:0;updateStatus();
+ const comments=total>=92?'こりゃあ伝説の一発だよ！':total>=82?'見事！ お客も大喜びだ！':total>=70?'いい出来だね。あと一工夫！':total>=55?'悪くないけど、配合を詰めよう。':'うわっ、不発気味だよ……';
+ $('#comment').textContent=comments;drawFace(total>=70?'happy':total<55?'bad':'normal');flash(`${rank}　${total}点`);
+ if(total>=78)setTimeout(nextMission,1600);
+}
+function nextMission(){mission=missions[(missions.indexOf(mission)+1)%missions.length];$('#mission').textContent='今夜の注文：'+mission.text}
+function flash(t){const m=$('#message');m.textContent=t;m.classList.remove('hidden');clearTimeout(flash.t);flash.t=setTimeout(()=>m.classList.add('hidden'),1100)}
+function updateStatus(){$('#money').textContent=money;$('#rep').textContent=rep}
+function randomize(){inputs.forEach(id=>{$('#'+id).value=18+Math.floor(Math.random()*78);$('#'+id).dispatchEvent(new Event('input'))});$$('.type')[Math.floor(Math.random()*6)].click();$$('#palette button')[Math.floor(Math.random()*6)].click();$('#multicolor').checked=Math.random()>.55;$('#comment').textContent='勘と経験で仕込んでみたよ。'}
+function clearSky(){particles=[];rockets=[]}
+
+function draw(dt){
+ ctx.clearRect(0,0,W,H);let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#020411');g.addColorStop(.65,'#080e24');g.addColorStop(1,'#19142b');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ for(const s of embers){ctx.globalAlpha=s.a;ctx.fillStyle='#cce8ff';ctx.fillRect((s.x%W),s.y*(H/600),s.s,s.s)}ctx.globalAlpha=1;
+ // mountains and town
+ ctx.fillStyle='#0b1020';ctx.beginPath();ctx.moveTo(0,H*.82);for(let x=0;x<=W;x+=70)ctx.lineTo(x,H*(.72+Math.random()*.04));ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+ ctx.fillStyle='#131428';for(let x=0;x<W;x+=18){const bh=8+(x*7%31);ctx.fillRect(x,H-bh-10,14,bh);if((x/18)%3===0){ctx.fillStyle='#d9a84b';ctx.fillRect(x+4,H-bh-5,2,2);ctx.fillStyle='#131428'}}
+ for(let i=rockets.length-1;i>=0;i--){const r=rockets[i];r.life+=dt;r.vy+=.006*dt;r.x+=r.vx*dt*.06;r.y+=r.vy*dt*.06;ctx.fillStyle='#fff4dc';ctx.fillRect(r.x-1,r.y,3,8);ctx.fillStyle='#ff8c4a';ctx.fillRect(r.x,r.y+8,1,10);if(r.y<=r.targetY||r.vy>=-.2){rockets.splice(i,1);explode(r)}}
+ ctx.globalCompositeOperation='lighter';for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt*.06;p.vx*=Math.pow(p.drag,dt*.06);p.vy=p.vy*Math.pow(p.drag,dt*.06)+p.gravity*dt*.06;p.x+=(p.vx+wind*.008)*dt*.06;p.y+=p.vy*dt*.06;const a=Math.max(0,p.life/p.max),[r,gc,b]=p.rgb;ctx.strokeStyle=`rgba(${r},${gc},${b},${a})`;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*p.trail,p.y-p.vy*p.trail);ctx.stroke();if(p.life<=0)particles.splice(i,1)}ctx.globalCompositeOperation='source-over';
+ last=performance.now();requestAnimationFrame(t=>draw(Math.min(40,t-last)));
+}
+inputs.forEach(id=>{$('#'+id).addEventListener('input',e=>$('#'+id+'Out').textContent=e.target.value)});
+$$('.type').forEach(b=>b.addEventListener('click',()=>{$$('.type').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedType=b.dataset.type}));
+$$('#palette button').forEach(b=>b.addEventListener('click',()=>{$$('#palette button').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedColor=b.dataset.color}));
+$('#launch').onclick=launch;$('#demo').onclick=randomize;$('#clear').onclick=clearSky;
+addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();launch()}if(e.key.toLowerCase()==='r')randomize();if(e.key.toLowerCase()==='c')clearSky()});
+$('#wind').textContent=`風：${wind<0?'←':'→'} ${Math.abs(wind).toFixed(1)}`;updateStatus();requestAnimationFrame(t=>{last=t;draw(16)});
+
+</script>
+</body>
+</html>
